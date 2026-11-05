@@ -1,26 +1,45 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { sanitizeString, sanitizeRating } from "@/lib/sanitize";
 import { Review } from "@/types";
 
 export async function POST(request: Request) {
-  try {
-    const { authorName, rating, comment, gamePlayed } = await request.json();
+  // 1. Rate limit review submissions: 3 per 10 minutes to prevent review spam / DoS
+  const rateLimitResponse = enforceRateLimit(request, {
+    limit: 3,
+    windowSeconds: 600,
+    prefix: "review_submit",
+  });
+  if (rateLimitResponse) return rateLimitResponse;
 
-    if (!authorName || !rating || !comment) {
+  try {
+    const body = await request.json();
+    const rawAuthor = body.authorName;
+    const rawRating = body.rating;
+    const rawComment = body.comment;
+    const rawGame = body.gamePlayed;
+
+    const authorName = sanitizeString(rawAuthor, 60);
+    const comment = sanitizeString(rawComment, 400);
+    const gamePlayed = rawGame ? sanitizeString(rawGame, 50) : null;
+    const rating = sanitizeRating(rawRating, 1, 5);
+
+    if (!authorName || !comment) {
       return NextResponse.json(
-        { error: "Author name, rating (1-5), and feedback comment are required" },
+        { error: "Author name and review comments are required." },
         { status: 400 }
       );
     }
 
     const newReview: Review = {
-      id: `rev-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+      id: `rev-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       authorName,
-      rating: Math.min(5, Math.max(1, parseInt(rating, 10))),
+      rating,
       comment,
-      gamePlayed: gamePlayed || null,
-      isVerified: true,
-      status: "APPROVED", // Auto-approved or managed in Admin Reviews CMS
+      gamePlayed,
+      isVerified: false,
+      status: "APPROVED",
       createdAt: new Date().toISOString(),
     };
 
@@ -28,11 +47,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Thank you! Your review has been submitted.",
+      message: "Thank you! Your feedback has been verified and recorded.",
       review: newReview,
     });
   } catch (error: any) {
-    console.error("Review Submit Error:", error);
+    console.error("Review Submit Error:", error?.message || "Unknown");
     return NextResponse.json({ error: "Failed to submit review" }, { status: 500 });
   }
 }

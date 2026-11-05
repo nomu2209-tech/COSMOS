@@ -1,34 +1,56 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { hashPassword, createSessionToken, COOKIE_NAME } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { sanitizeString, sanitizeEmail, sanitizePhone } from "@/lib/sanitize";
 import { User } from "@/types";
 
 export async function POST(request: Request) {
-  try {
-    const { name, email, phone, password } = await request.json();
+  // 1. Rate limit registration attempts: 5 per 10 minutes to prevent bot account creation
+  const rateLimitResponse = enforceRateLimit(request, {
+    limit: 5,
+    windowSeconds: 600,
+    prefix: "auth_register",
+  });
+  if (rateLimitResponse) return rateLimitResponse;
 
-    if (!name || (!email && !phone)) {
+  try {
+    const body = await request.json();
+    const { name, email, phone, password } = body;
+
+    const sanitizedName = sanitizeString(name, 80);
+    const validatedEmail = email ? sanitizeEmail(email) : null;
+    const validatedPhone = phone ? sanitizePhone(phone) : null;
+
+    if (!sanitizedName || (!validatedEmail && !validatedPhone)) {
       return NextResponse.json(
-        { error: "Name and at least Email or Phone are required" },
+        { error: "Valid name and at least Email or Mobile Number are required" },
         { status: 400 }
       );
     }
 
-    if (email) {
-      const existingEmail = await db.findOne("users", (u) => u.email === email.toLowerCase());
+    if (password && (typeof password !== "string" || password.length < 8)) {
+      return NextResponse.json(
+        { error: "Password must be at least 8 characters long" },
+        { status: 400 }
+      );
+    }
+
+    if (validatedEmail) {
+      const existingEmail = await db.findOne("users", (u) => u.email === validatedEmail);
       if (existingEmail) {
         return NextResponse.json(
-          { error: "An account with this email already exists" },
+          { error: "An account with this email address already exists" },
           { status: 400 }
         );
       }
     }
 
-    if (phone) {
-      const existingPhone = await db.findOne("users", (u) => u.phone === phone);
+    if (validatedPhone) {
+      const existingPhone = await db.findOne("users", (u) => u.phone === validatedPhone);
       if (existingPhone) {
         return NextResponse.json(
-          { error: "An account with this phone number already exists" },
+          { error: "An account with this mobile number already exists" },
           { status: 400 }
         );
       }
@@ -36,14 +58,14 @@ export async function POST(request: Request) {
 
     const passwordHash = password ? await hashPassword(password) : null;
     const newUser: User = {
-      id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-      name,
-      email: email ? email.toLowerCase() : null,
-      phone: phone || null,
+      id: `user-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: sanitizedName,
+      email: validatedEmail,
+      phone: validatedPhone,
       passwordHash,
       role: "CUSTOMER",
-      isEmailVerified: Boolean(email),
-      isPhoneVerified: Boolean(phone),
+      isEmailVerified: Boolean(validatedEmail),
+      isPhoneVerified: Boolean(validatedPhone),
       cosmosXp: 100, // Welcome bonus XP
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -75,13 +97,13 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 30 * 24 * 60 * 60,
       path: "/",
     });
 
     return response;
   } catch (error: any) {
-    console.error("Register Error:", error);
+    console.error("Register Error:", error?.message || "Unknown");
     return NextResponse.json({ error: "Failed to register account" }, { status: 500 });
   }
 }

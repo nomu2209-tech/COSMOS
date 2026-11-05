@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { sanitizeString, sanitizePhone, sanitizeEmail } from "@/lib/sanitize";
 import { Booking, User } from "@/types";
 
 export async function POST(request: Request) {
+  // 1. Rate limit bookings creation: 10 per minute per IP
+  const rateLimitResponse = enforceRateLimit(request, {
+    limit: 10,
+    windowSeconds: 60,
+    prefix: "booking_create",
+  });
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const user = await getCurrentUser();
     const body = await request.json();
@@ -20,6 +30,12 @@ export async function POST(request: Request) {
       offerCode,
       specialRequests,
     } = body;
+
+    const cleanCustomerName = sanitizeString(customerName || user?.name || "Cosmos Gamer", 80);
+    const cleanCustomerPhone = sanitizePhone(customerPhone || user?.phone) || "";
+    const cleanCustomerEmail = customerEmail ? sanitizeEmail(customerEmail) : (user?.email || "");
+    const cleanSpecialRequests = specialRequests ? sanitizeString(specialRequests, 300) : null;
+    const cleanOfferCode = offerCode ? sanitizeString(offerCode, 30).toUpperCase() : null;
 
     if (!zoneId || !bookingDate || !startTime || !durationHours) {
       return NextResponse.json(
@@ -145,9 +161,9 @@ export async function POST(request: Request) {
       id: `booking-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
       bookingRef,
       userId,
-      customerName: customerName || user?.name || "Gamer",
-      customerPhone: customerPhone || user?.phone || "",
-      customerEmail: customerEmail || user?.email || "",
+      customerName: cleanCustomerName,
+      customerPhone: cleanCustomerPhone,
+      customerEmail: cleanCustomerEmail,
       zoneId,
       zoneName: zone.name,
       stationId: assignedStation.id,
@@ -164,7 +180,7 @@ export async function POST(request: Request) {
       paymentMethod: paymentMethod || "UPI",
       paymentStatus: paymentMethod === "PAY_AT_VENUE" ? "PENDING" : "COMPLETED",
       bookingStatus: "CONFIRMED",
-      specialRequests: specialRequests || null,
+      specialRequests: cleanSpecialRequests,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

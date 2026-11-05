@@ -746,30 +746,18 @@ export default function LoginPage() {
 
           </div>
 
-          {/* Bottom Fast Testing Card & Security Notice */}
-          <div className="mt-6 pt-4 border-t border-zinc-800/80 space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-zinc-400">
-              <span className="font-semibold text-zinc-300">Quick Test Credentials:</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={fillAdmin}
-                  className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors cursor-pointer text-[10px] font-mono"
-                >
-                  Auto-fill Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={fillGamer}
-                  className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors cursor-pointer text-[10px] font-mono"
-                >
-                  Auto-fill Gamer
-                </button>
-              </div>
+          {/* Bottom Security Assurance & Access Notice */}
+          <div className="mt-6 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400">
+            <div className="flex items-center gap-1.5 text-zinc-400 font-mono text-[10px]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#ea580c]" />
+              <span>SECURE 256-BIT ENCRYPTED SESSION</span>
             </div>
-            <p className="text-[10px] text-zinc-500 font-mono">
-              Admin: admin@cosmosgaming.com // Customer: aryan@gamer.com
-            </p>
+            <Link
+              href="/privacy"
+              className="text-zinc-500 hover:text-zinc-300 text-[10px] underline transition-colors"
+            >
+              Privacy & Security
+            </Link>
           </div>
 
         </div>

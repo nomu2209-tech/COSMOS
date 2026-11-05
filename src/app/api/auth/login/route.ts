@@ -1,41 +1,57 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { verifyPassword, createSessionToken, COOKIE_NAME } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { sanitizeString } from "@/lib/sanitize";
 
 export async function POST(request: Request) {
-  try {
-    const { identifier, password } = await request.json();
+  // 1. Enforce strict rate limit: 5 login attempts per minute per IP
+  const rateLimitResponse = enforceRateLimit(request, {
+    limit: 5,
+    windowSeconds: 60,
+    prefix: "auth_login",
+  });
+  if (rateLimitResponse) return rateLimitResponse;
 
-    if (!identifier || !password) {
+  try {
+    const body = await request.json();
+    const rawIdentifier = body.identifier;
+    const rawPassword = body.password;
+
+    if (!rawIdentifier || !rawPassword || typeof rawPassword !== "string") {
       return NextResponse.json(
-        { error: "Email/Phone and password are required" },
+        { error: "Email or phone and password are required" },
         { status: 400 }
       );
     }
 
-    const cleanIdentifier = identifier.trim().toLowerCase();
+    const cleanIdentifier = sanitizeString(rawIdentifier, 150).toLowerCase();
+    const cleanDigits = cleanIdentifier.replace(/\D/g, "");
+
     const user = await db.findOne(
       "users",
       (u) =>
-        (u.email?.toLowerCase() === cleanIdentifier) ||
-        (u.phone?.replace(/[^0-9]/g, "") === cleanIdentifier.replace(/[^0-9]/g, ""))
+        Boolean(u.email && u.email.toLowerCase() === cleanIdentifier) ||
+        Boolean(cleanDigits.length >= 10 && u.phone && u.phone.replace(/\D/g, "").endsWith(cleanDigits.slice(-10)))
     );
 
     if (!user) {
+      // Run dummy hash to prevent timing attack enumeration
+      await verifyPassword(rawPassword, null);
       return NextResponse.json(
-        { error: "Invalid credentials. Please check your email or phone." },
+        { error: "Invalid email/phone or password." },
         { status: 401 }
       );
     }
 
     if (!user.passwordHash) {
       return NextResponse.json(
-        { error: "This account was created with Phone OTP. Please log in using Phone OTP." },
+        { error: "This account was registered using Phone OTP. Please log in with OTP." },
         { status: 400 }
       );
     }
 
-    const isValid = await verifyPassword(password, user.passwordHash);
+    const isValid = await verifyPassword(rawPassword, user.passwordHash);
     if (!isValid) {
       return NextResponse.json(
         { error: "Invalid email/phone or password." },
@@ -73,7 +89,10 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error: any) {
-    console.error("Login Error:", error);
-    return NextResponse.json({ error: "Failed to authenticate" }, { status: 500 });
+    console.error("Login Error:", error?.message || "Unknown");
+    return NextResponse.json(
+      { error: "Authentication failed. Please try again." },
+      { status: 500 }
+    );
   }
 }
