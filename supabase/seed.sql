@@ -1,7 +1,7 @@
 -- Users
 INSERT INTO users (id, name, email, phone, "passwordHash", role, "isEmailVerified", "isPhoneVerified", "cosmosXp", "createdAt", "updatedAt")
 VALUES
-('b4e4c278-f2b7-4e63-9114-118e950bc450', 'Cosmos Admin', 'admin@cosmosgaming.com', '+919769464603', '$2b$10$b6QTJPZ5i/s2mYDDGFvuGOUK9/YeQGcF3tFZcrCBq26cJKt4bjMPq', 'ADMIN', true, true, 5000, NOW(), NOW()),
+('b4e4c278-f2b7-4e63-9114-118e950bc450', 'Cosmos Admin', 'admin@cosmosgaming.com', '+919769464603', '$2b$10$0KuOSGN1awfmGDQeY.OQZeGerbjGskouXm0EjCBtW7XoBYHFSwSeu', 'ADMIN', true, true, 5000, NOW(), NOW()),
 ('33e9b119-913a-4467-b50a-f10d29f046fa', 'Aryan Sharma', 'aryan@gamer.com', '+919876543210', '$2b$10$Qfy2qsG93qm.BdrHECA8nOybg86vhzrzK7HsVGmm8TosfW3evgNea', 'CUSTOMER', true, true, 450, NOW(), NOW());
 
 -- Business Settings
