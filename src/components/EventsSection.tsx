@@ -14,7 +14,6 @@ import {
   Award,
   CheckCircle,
   X,
-  Sparkles,
 } from "lucide-react";
 import { EventTournament } from "@/types";
 
@@ -68,20 +67,17 @@ export default function EventsSection() {
 
   return (
     <section id="events" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
-      {/* Ambient Glow */}
-      <div className="cosmos-glow-orb w-96 h-96 bg-purple-600/10 top-0 right-1/3" />
-
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <Badge variant="purple" size="md">
-          <Trophy className="w-3.5 h-3.5 mr-1 text-purple-400" />
+        <Badge variant="neutral" size="md">
+          <Trophy className="w-3.5 h-3.5 mr-1 text-zinc-400" />
           VERIFIED ESPORTS TOURNAMENTS
         </Badge>
         <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white font-['Rajdhani',sans-serif]">
           Cosmos Gaming Championships
         </h2>
-        <p className="text-sm text-slate-300">
-          Compete on official tournament PS5 and PC setups. Win verified cash scholarships, memberships, and cafe glory.
+        <p className="text-sm text-zinc-400">
+          Official tournament PS5 and PC setups. Cash prizes and cafe leaderboards.
         </p>
       </div>
 
@@ -96,7 +92,7 @@ export default function EventsSection() {
           {events.map((event) => (
             <GlassCard
               key={event.id}
-              className="group !p-0 border-white/10 hover:border-purple-500/40 flex flex-col justify-between"
+              className="group !p-0 border-zinc-800 hover:border-zinc-700 flex flex-col justify-between"
             >
               {/* Event Banner */}
               <div className="relative h-64 w-full overflow-hidden">
@@ -106,11 +102,11 @@ export default function EventsSection() {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e18] via-[#0e0e18]/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/50 to-transparent" />
 
                 {/* Entry Fee Badge */}
-                <div className="absolute top-4 right-4 bg-purple-950/80 backdrop-blur-md border border-purple-500/40 px-3.5 py-1.5 rounded-full shadow-lg">
-                  <span className="text-xs text-slate-300">Entry: </span>
+                <div className="absolute top-4 right-4 bg-zinc-900/90 backdrop-blur-md border border-zinc-700 px-3 py-1 rounded-md shadow-sm">
+                  <span className="text-xs text-zinc-400">Entry: </span>
                   <span className="text-base font-bold text-white font-['Rajdhani',sans-serif]">
                     {event.entryFee > 0 ? `₹${event.entryFee}` : "FREE"}
                   </span>
@@ -118,7 +114,7 @@ export default function EventsSection() {
 
                 {/* Category Badge */}
                 <div className="absolute top-4 left-4">
-                  <Badge variant="purple" size="sm">
+                  <Badge variant="neutral" size="sm">
                     {event.category.replace("_", " ")}
                   </Badge>
                 </div>
@@ -127,7 +123,7 @@ export default function EventsSection() {
                   <h3 className="text-2xl font-black uppercase tracking-wide text-white font-['Rajdhani',sans-serif]">
                     {event.title}
                   </h3>
-                  <p className="text-xs text-purple-300 font-semibold mt-0.5">{event.game}</p>
+                  <p className="text-xs text-zinc-300 font-semibold mt-0.5">{event.game}</p>
                 </div>
               </div>
 
@@ -136,11 +132,11 @@ export default function EventsSection() {
                 <div className="space-y-3">
                   {/* Prize Pool Highlight */}
                   {event.prizePool && (
-                    <div className="p-3.5 rounded-xl bg-purple-950/40 border border-purple-500/30 flex items-start gap-3 text-xs">
+                    <div className="p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 flex items-start gap-3 text-xs">
                       <Award className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                       <div>
                         <p className="font-bold text-amber-300 uppercase tracking-wider text-[11px]">
-                          Prize Pool & Rewards
+                          Prize Pool &amp; Rewards
                         </p>
                         <p className="text-white font-medium mt-0.5">{event.prizePool}</p>
                       </div>
@@ -148,37 +144,36 @@ export default function EventsSection() {
                   )}
 
                   {/* Metadata info */}
-                  <div className="grid grid-cols-2 gap-3 text-xs text-slate-300">
+                  <div className="grid grid-cols-2 gap-3 text-xs text-zinc-300">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-purple-400 shrink-0" />
+                      <Calendar className="w-4 h-4 text-zinc-400 shrink-0" />
                       <span>{event.eventDate}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-purple-400 shrink-0" />
+                      <Clock className="w-4 h-4 text-zinc-400 shrink-0" />
                       <span>{event.startTime} Onwards</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-sky-400 shrink-0" />
+                      <Users className="w-4 h-4 text-zinc-400 shrink-0" />
                       <span>
                         {event.currentParticipants} / {event.maxParticipants} Registered
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-pink-400 shrink-0" />
-                      <span>{event.format}</span>
+                      <span className="text-[11px] font-mono text-zinc-400 uppercase">{event.format}</span>
                     </div>
                   </div>
 
                   {event.rules && (
-                    <p className="text-[11px] text-slate-400 italic bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                    <p className="text-[11px] text-zinc-400 italic bg-zinc-900 p-2.5 rounded-lg border border-zinc-800">
                       *Rules: {event.rules}
                     </p>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                  <span className="text-xs text-emerald-400 font-medium">
-                    📍 Cosmos Centre, Bandra East
+                <div className="pt-4 border-t border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs text-zinc-400 font-medium">
+                    Cosmos Centre | Bandra East
                   </span>
                   <LiquidGlassButton
                     variant="primary"
@@ -210,13 +205,13 @@ export default function EventsSection() {
             </button>
 
             <div>
-              <Badge variant="purple" size="sm">
+              <Badge variant="neutral" size="sm">
                 TOURNAMENT REGISTRATION
               </Badge>
               <h3 className="text-2xl font-black uppercase text-white font-['Rajdhani',sans-serif] mt-1">
                 {selectedEvent.title}
               </h3>
-              <p className="text-xs text-purple-300 font-medium">{selectedEvent.game} • {selectedEvent.format}</p>
+              <p className="text-xs text-zinc-400 font-medium">{selectedEvent.game} - {selectedEvent.format}</p>
             </div>
 
             {statusMessage ? (

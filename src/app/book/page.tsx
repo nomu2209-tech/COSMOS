@@ -9,8 +9,7 @@ export const metadata = {
 export default function BookPage() {
   return (
     <div className="min-h-[85vh] relative">
-      <div className="cosmos-glow-orb w-[500px] h-[500px] bg-purple-600/15 top-10 left-1/2 -translate-x-1/2" />
-      <Suspense fallback={<div className="py-24 text-center text-xs text-slate-400">Loading booking engine...</div>}>
+      <Suspense fallback={<div className="py-24 text-center text-xs text-zinc-400">Loading booking engine...</div>}>
         <BookingWizard />
       </Suspense>
     </div>

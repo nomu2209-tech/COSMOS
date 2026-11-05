@@ -25,6 +25,9 @@ import {
   Download,
 } from "lucide-react";
 import { Booking } from "@/types";
+import ConfirmationModal from "./ConfirmationModal";
+import CopyButton from "./ui/CopyButton";
+import { getStoredUtmParams } from "@/lib/utm";
 
 export default function BookingWizard() {
   const searchParams = useSearchParams();
@@ -51,6 +54,7 @@ export default function BookingWizard() {
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -156,6 +160,7 @@ export default function BookingWizard() {
           paymentMethod,
           offerCode: offerCode || null,
           specialRequests: specialRequests || null,
+          utmParams: getStoredUtmParams(),
         }),
       });
 
@@ -208,16 +213,16 @@ END:VCALENDAR`;
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Wizard Progress Bar */}
       <div className="mb-10 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
-          <span className={step >= 1 ? "text-purple-300 font-bold" : ""}>1. Zone & Date</span>
-          <span className={step >= 2 ? "text-purple-300 font-bold" : ""}>2. Time & Station</span>
-          <span className={step >= 3 ? "text-purple-300 font-bold" : ""}>3. Customer Details</span>
-          <span className={step >= 4 ? "text-purple-300 font-bold" : ""}>4. Payment</span>
+        <div className="flex items-center justify-between text-xs font-semibold text-zinc-400">
+          <span className={step >= 1 ? "text-white font-bold" : ""}>1. Zone & Date</span>
+          <span className={step >= 2 ? "text-white font-bold" : ""}>2. Time & Station</span>
+          <span className={step >= 3 ? "text-white font-bold" : ""}>3. Customer Details</span>
+          <span className={step >= 4 ? "text-white font-bold" : ""}>4. Payment</span>
           <span className={step >= 5 ? "text-emerald-400 font-bold" : ""}>5. Confirmed</span>
         </div>
-        <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
+        <div className="h-2 w-full bg-zinc-800 rounded-md overflow-hidden p-0.5 border border-zinc-700">
           <div
-            className="h-full bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-400 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(139,92,246,0.6)]"
+            className="h-full bg-white rounded-md transition-all duration-300"
             style={{ width: `${(step / 5) * 100}%` }}
           />
         </div>
@@ -227,11 +232,11 @@ END:VCALENDAR`;
       {step === 1 && (
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <Badge variant="purple" size="sm">STEP 1 OF 4</Badge>
+            <Badge variant="neutral" size="sm">STEP 1 OF 4</Badge>
             <h2 className="text-3xl font-black uppercase text-white font-['Rajdhani',sans-serif]">
               Select Gaming Zone & Date
             </h2>
-            <p className="text-xs text-slate-400">Choose your battle station and session duration</p>
+            <p className="text-xs text-zinc-400">Choose your gaming station and session duration</p>
           </div>
 
           {/* Gaming Zones Selector */}
@@ -244,19 +249,19 @@ END:VCALENDAR`;
                   onClick={() => setSelectedZoneId(z.id)}
                   className={`glass-card !p-4 cursor-pointer transition-all flex flex-col justify-between ${
                     isSelected
-                      ? "border-purple-500/80 bg-purple-950/40 shadow-[0_0_25px_rgba(139,92,246,0.4)]"
-                      : "border-white/10 hover:border-white/25"
+                      ? "border-white bg-zinc-850 shadow-sm"
+                      : "border-zinc-800 hover:border-zinc-700"
                   }`}
                 >
                   <div className="space-y-3">
-                    <div className="relative h-28 w-full rounded-xl overflow-hidden">
+                    <div className="relative h-28 w-full rounded-lg overflow-hidden">
                       <Image src={z.imageUrl} alt={z.name} fill className="object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                       <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
                         <span className="text-xs font-bold text-white font-['Rajdhani',sans-serif]">
                           ₹{z.hourlyRate}/hr
                         </span>
-                        <Badge variant={isSelected ? "purple" : "neutral"} size="sm">
+                        <Badge variant="neutral" size="sm">
                           {z.totalStations} Rigs
                         </Badge>
                       </div>
@@ -266,15 +271,15 @@ END:VCALENDAR`;
                       <h4 className="text-sm font-bold text-white font-['Rajdhani',sans-serif]">
                         {z.name}
                       </h4>
-                      <p className="text-[11px] text-slate-400 line-clamp-2 mt-1">
+                      <p className="text-[11px] text-zinc-400 line-clamp-2 mt-1">
                         {z.specs}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-xs">
-                    <span className={isSelected ? "text-purple-300 font-bold" : "text-slate-400"}>
-                      {isSelected ? "✓ Selected" : "Select Zone"}
+                  <div className="mt-3 pt-2 border-t border-zinc-800 flex items-center justify-between text-xs">
+                    <span className={isSelected ? "text-white font-bold" : "text-zinc-400"}>
+                      {isSelected ? "Selected" : "Select Zone"}
                     </span>
                   </div>
                 </div>
@@ -287,8 +292,8 @@ END:VCALENDAR`;
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Date Selection */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <CalendarIcon className="w-4 h-4 text-purple-400" />
+                <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <CalendarIcon className="w-4 h-4 text-zinc-400" />
                   <span>Session Date</span>
                 </label>
                 <input
@@ -302,8 +307,8 @@ END:VCALENDAR`;
 
               {/* Duration Selection */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-sky-400" />
+                <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Clock className="w-4 h-4 text-zinc-400" />
                   <span>Duration</span>
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -312,10 +317,10 @@ END:VCALENDAR`;
                       key={hours}
                       type="button"
                       onClick={() => setSelectedDuration(hours)}
-                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                      className={`py-2 px-3 rounded-lg text-xs font-bold border transition-colors ${
                         selectedDuration === hours
-                          ? "bg-purple-600/30 border-purple-500/80 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)]"
-                          : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                          ? "bg-white border-white text-zinc-950 font-bold"
+                          : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800"
                       }`}
                     >
                       {hours} {hours === 1 ? "Hr" : "Hrs"}
@@ -326,9 +331,9 @@ END:VCALENDAR`;
 
               {/* Squad / Players count */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-pink-400" />
-                  <span>Players / Rigs Count</span>
+                <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-zinc-400" />
+                  <span>Players Count</span>
                 </label>
                 <div className="grid grid-cols-4 gap-2">
                   {[1, 2, 3, 4].map((count) => (
@@ -336,10 +341,10 @@ END:VCALENDAR`;
                       key={count}
                       type="button"
                       onClick={() => setPlayersCount(count)}
-                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                      className={`py-2 px-3 rounded-lg text-xs font-bold border transition-colors ${
                         playersCount === count
-                          ? "bg-pink-600/30 border-pink-500/80 text-white shadow-[0_0_12px_rgba(236,72,153,0.4)]"
-                          : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                          ? "bg-white border-white text-zinc-950 font-bold"
+                          : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800"
                       }`}
                     >
                       {count} {count === 1 ? "Solo" : `x${count}`}
@@ -368,24 +373,24 @@ END:VCALENDAR`;
       {step === 2 && (
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <Badge variant="purple" size="sm">STEP 2 OF 4</Badge>
+            <Badge variant="neutral" size="sm">STEP 2 OF 4</Badge>
             <h2 className="text-3xl font-black uppercase text-white font-['Rajdhani',sans-serif]">
               Select Available Time Slot
             </h2>
-            <p className="text-xs text-slate-400">
-              Live database availability for {selectedZone?.name} on {selectedDate} ({selectedDuration} hrs)
+            <p className="text-xs text-zinc-400">
+              Live station availability for {selectedZone?.name} on {selectedDate} ({selectedDuration} hrs)
             </p>
           </div>
 
-          <GlassCard className="space-y-6 border-white/10">
+          <GlassCard className="space-y-6 border-zinc-800">
             {isLoadingSlots ? (
               <div className="py-16 text-center space-y-3">
-                <Sparkles className="w-8 h-8 text-purple-400 animate-spin mx-auto" />
-                <p className="text-xs text-slate-400">Querying live station database...</p>
+                <Clock className="w-8 h-8 text-zinc-500 animate-pulse mx-auto" />
+                <p className="text-xs text-zinc-400">Querying live station database...</p>
               </div>
             ) : availableSlots.length === 0 ? (
               <div className="py-12 text-center space-y-3">
-                <p className="text-sm text-slate-300">No slots available for this configuration.</p>
+                <p className="text-sm text-zinc-400">No slots available for this configuration.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -399,12 +404,12 @@ END:VCALENDAR`;
                       type="button"
                       disabled={!isAvailable}
                       onClick={() => isAvailable && setSelectedStartTime(slot.startTime)}
-                      className={`p-3.5 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                      className={`p-3.5 rounded-lg border text-left transition-colors relative flex flex-col justify-between ${
                         !isAvailable
-                          ? "bg-red-950/10 border-red-900/20 text-slate-600 cursor-not-allowed opacity-50"
+                          ? "bg-zinc-900/50 border-zinc-800/40 text-zinc-600 cursor-not-allowed opacity-50"
                           : isSelected
-                          ? "bg-purple-600/30 border-purple-500/80 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-                          : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20"
+                          ? "bg-white border-white text-zinc-950 font-bold"
+                          : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-850 hover:border-zinc-700"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -412,16 +417,16 @@ END:VCALENDAR`;
                           {slot.startTime}
                         </span>
                         {isAvailable ? (
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                          <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-zinc-950" : "bg-emerald-400"}`} />
                         ) : (
-                          <span className="text-[10px] text-red-400 uppercase font-bold">Booked</span>
+                          <span className="text-[10px] text-zinc-500 uppercase font-bold">Booked</span>
                         )}
                       </div>
 
-                      <div className="mt-2 text-[10px] text-slate-400 flex items-center justify-between">
+                      <div className={`mt-2 text-[10px] flex items-center justify-between ${isSelected ? "text-zinc-700" : "text-zinc-400"}`}>
                         <span>to {slot.endTime}</span>
                         {isAvailable && (
-                          <span className="text-purple-300 font-semibold">
+                          <span className={isSelected ? "font-bold text-zinc-950" : "text-zinc-300 font-semibold"}>
                             {slot.availableStationsCount} free
                           </span>
                         )}
@@ -461,21 +466,21 @@ END:VCALENDAR`;
       {step === 3 && (
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <Badge variant="purple" size="sm">STEP 3 OF 4</Badge>
+            <Badge variant="neutral" size="sm">STEP 3 OF 4</Badge>
             <h2 className="text-3xl font-black uppercase text-white font-['Rajdhani',sans-serif]">
               Gamer Information & Offers
             </h2>
-            <p className="text-xs text-slate-400">
-              Enter your contact info for instant SMS/WhatsApp confirmation and station assignment
+            <p className="text-xs text-zinc-400">
+              Enter your contact details for instant station confirmation
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left 2 Cols: Form */}
             <div className="lg:col-span-2 space-y-6">
-              <GlassCard className="space-y-4 border-white/10">
+              <GlassCard className="space-y-4 border-zinc-800">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1">
                     Full Name *
                   </label>
                   <input
@@ -490,7 +495,7 @@ END:VCALENDAR`;
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1">
                       Mobile Number (WhatsApp) *
                     </label>
                     <input
@@ -503,7 +508,7 @@ END:VCALENDAR`;
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1">
                       Email Address (Optional)
                     </label>
                     <input
@@ -517,7 +522,7 @@ END:VCALENDAR`;
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1">
                     Promo / Offer Code
                   </label>
                   <div className="flex gap-2">
@@ -525,20 +530,19 @@ END:VCALENDAR`;
                       type="text"
                       value={offerCode}
                       onChange={(e) => setOfferCode(e.target.value.toUpperCase())}
-                      placeholder="e.g. SQUAD20 or BEATTHEPRO"
+                      placeholder="e.g. COSMOSBOGO"
                       className="glass-input uppercase font-mono"
                     />
                   </div>
                   {discount > 0 && (
-                    <p className="text-xs text-emerald-400 mt-1 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Coupon applied! You save ₹{discount}</span>
+                    <p className="text-xs text-emerald-400 mt-1 font-medium">
+                      Coupon applied: You save ₹{discount}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1">
                     Special Setup Requests (Optional)
                   </label>
                   <textarea
@@ -554,38 +558,38 @@ END:VCALENDAR`;
 
             {/* Right Col: Summary Card */}
             <div>
-              <GlassCard className="space-y-5 border-purple-500/30 bg-purple-950/20">
-                <h4 className="text-sm font-bold text-white font-['Rajdhani',sans-serif] uppercase tracking-wider pb-2 border-b border-white/10">
+              <GlassCard className="space-y-5 border-zinc-800 bg-zinc-900">
+                <h4 className="text-sm font-bold text-white font-['Rajdhani',sans-serif] uppercase tracking-wider pb-2 border-b border-zinc-800">
                   Booking Summary
                 </h4>
 
                 <div className="space-y-2 text-xs">
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Zone:</span>
                     <span className="font-bold text-white">{selectedZone?.name}</span>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Date:</span>
                     <span className="font-semibold text-white">{selectedDate}</span>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Time Slot:</span>
-                    <span className="font-semibold text-purple-300">
+                    <span className="font-semibold text-white">
                       {selectedStartTime} ({selectedDuration} hrs)
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Players:</span>
                     <span className="font-semibold text-white">{playersCount} Gamer(s)</span>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Rate:</span>
                     <span>₹{selectedZone?.hourlyRate}/hr</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-white/10 space-y-1.5 text-xs">
-                  <div className="flex justify-between text-slate-300">
+                <div className="pt-3 border-t border-zinc-800 space-y-1.5 text-xs">
+                  <div className="flex justify-between text-zinc-400">
                     <span>Subtotal:</span>
                     <span>₹{subtotal}</span>
                   </div>
@@ -595,9 +599,9 @@ END:VCALENDAR`;
                       <span>-₹{discount}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-base font-black text-white pt-2 border-t border-white/5 font-['Rajdhani',sans-serif]">
+                  <div className="flex justify-between text-base font-black text-white pt-2 border-t border-zinc-800 font-['Rajdhani',sans-serif]">
                     <span>Total Due:</span>
-                    <span className="text-xl text-purple-300">₹{totalAmount}</span>
+                    <span className="text-xl text-white">₹{totalAmount}</span>
                   </div>
                 </div>
               </GlassCard>
@@ -632,15 +636,15 @@ END:VCALENDAR`;
       {step === 4 && (
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <Badge variant="purple" size="sm">STEP 4 OF 4</Badge>
+            <Badge variant="neutral" size="sm">STEP 4 OF 4</Badge>
             <h2 className="text-3xl font-black uppercase text-white font-['Rajdhani',sans-serif]">
               Payment & Final Confirmation
             </h2>
-            <p className="text-xs text-slate-400">Select payment method to lock in your battle station</p>
+            <p className="text-xs text-zinc-400">Select payment method to lock in your gaming station</p>
           </div>
 
           <div className="max-w-2xl mx-auto space-y-6">
-            <GlassCard className="space-y-6 border-white/10">
+            <GlassCard className="space-y-6 border-zinc-800">
               <h4 className="text-sm font-bold text-white font-['Rajdhani',sans-serif] uppercase tracking-wider">
                 Select Payment Mode
               </h4>
@@ -655,34 +659,34 @@ END:VCALENDAR`;
                   <div
                     key={pm.id}
                     onClick={() => setPaymentMethod(pm.id as any)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                    className={`p-4 rounded-lg border cursor-pointer transition-colors ${
                       paymentMethod === pm.id
-                        ? "bg-purple-600/30 border-purple-500/80 shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-                        : "bg-white/5 border-white/10 hover:bg-white/10"
+                        ? "bg-zinc-800 border-white text-white"
+                        : "bg-zinc-900 border-zinc-800 hover:bg-zinc-850"
                     }`}
                   >
                     <p className="text-xs font-bold text-white">{pm.title}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{pm.desc}</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">{pm.desc}</p>
                   </div>
                 ))}
               </div>
 
               {/* Total Summary */}
-              <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-500/30 flex items-center justify-between">
+              <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-400">Final Booking Amount:</p>
+                  <p className="text-xs text-zinc-400">Final Booking Amount:</p>
                   <p className="text-2xl font-black text-white font-['Rajdhani',sans-serif]">
                     ₹{totalAmount}
                   </p>
                 </div>
-                <div className="text-right text-xs text-purple-300">
-                  <p className="font-semibold">+100 Cosmos XP</p>
-                  <p className="text-[10px] text-slate-400">Will be credited to your account</p>
+                <div className="text-right text-xs text-zinc-400">
+                  <p className="font-semibold text-zinc-200">Instant Station Lock</p>
+                  <p className="text-[10px] text-zinc-500">Pay at venue or via online UPI</p>
                 </div>
               </div>
 
               {errorMessage && (
-                <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300">
+                <div className="p-3 rounded-lg bg-red-950/40 border border-red-800/40 text-xs text-red-300">
                   {errorMessage}
                 </div>
               )}
@@ -700,65 +704,82 @@ END:VCALENDAR`;
               </LiquidGlassButton>
 
               <LiquidGlassButton
-                variant="primary"
+                variant="accent"
                 size="lg"
                 disabled={isSubmitting}
-                onClick={handleFinalizeBooking}
+                onClick={() => setShowConfirmModal(true)}
                 icon={<CreditCard className="w-4 h-4" />}
               >
                 {isSubmitting ? "Finalizing Booking..." : "CONFIRM BOOKING & LOCK SLOT"}
               </LiquidGlassButton>
             </div>
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+              isOpen={showConfirmModal}
+              title="Lock Gaming Station?"
+              message={`You are about to book a ${selectedDuration}-hour gaming session on ${selectedDate} at ${selectedStartTime} for ${playersCount} player(s). Would you like to proceed?`}
+              confirmText="Yes, Lock My Slot"
+              cancelText="Review Details"
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                handleFinalizeBooking();
+              }}
+              onCancel={() => setShowConfirmModal(false)}
+            />
           </div>
         </div>
       )}
 
       {/* STEP 5: SUCCESS CONFIRMATION SCREEN */}
       {step === 5 && confirmedBooking && (
-        <div className="max-w-2xl mx-auto space-y-8 animate-in zoom-in-95 duration-500">
-          <GlassCard glow="purple" className="text-center space-y-6 border-purple-500/50 bg-purple-950/30">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
-              <CheckCircle2 className="w-10 h-10" />
+        <div className="max-w-2xl mx-auto space-y-8 animate-in zoom-in-95 duration-300">
+          <GlassCard className="text-center space-y-6 border-zinc-800 bg-zinc-900">
+            <div className="w-14 h-14 rounded-lg bg-emerald-950/40 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-800/60">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <Badge variant="green" size="md">BOOKING CONFIRMED 🎮</Badge>
+              <Badge variant="green" size="md">BOOKING CONFIRMED</Badge>
               <h2 className="text-3xl font-black uppercase text-white font-['Rajdhani',sans-serif]">
-                Your Battle Station is Ready!
+                Your Station is Ready
               </h2>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-zinc-400">
                 We have reserved your setup at Cosmos Gaming Mumbai, Bandra East.
               </p>
             </div>
 
             {/* Booking Details Card */}
-            <div className="p-5 rounded-2xl bg-black/40 border border-white/10 space-y-3 text-xs text-left max-w-md mx-auto">
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="text-slate-400">Booking Reference:</span>
-                <span className="font-mono font-bold text-purple-300">{confirmedBooking.bookingRef}</span>
+            <div className="p-5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-3 text-xs text-left max-w-md mx-auto">
+              <div className="flex items-center justify-between border-b border-zinc-850 pb-2">
+                <span className="text-zinc-400">Booking Reference:</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-white">{confirmedBooking.bookingRef}</span>
+                  <CopyButton text={confirmedBooking.bookingRef} label="Copy Ref" />
+                </div>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Gamer Name:</span>
+                <span className="text-zinc-400">Gamer Name:</span>
                 <span className="font-semibold text-white">{confirmedBooking.customerName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Zone & Station:</span>
+                <span className="text-zinc-400">Zone & Station:</span>
                 <span className="font-semibold text-white">
                   {confirmedBooking.zoneName} (Station #{confirmedBooking.stationNumber})
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Date & Time:</span>
-                <span className="font-semibold text-purple-300">
-                  {confirmedBooking.bookingDate} • {confirmedBooking.startTime} – {confirmedBooking.endTime}
+                <span className="text-zinc-400">Date & Time:</span>
+                <span className="font-semibold text-white">
+                  {confirmedBooking.bookingDate} | {confirmedBooking.startTime} - {confirmedBooking.endTime}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Total Paid/Due:</span>
+                <span className="text-zinc-400">Total Paid/Due:</span>
                 <span className="font-bold text-white">₹{confirmedBooking.totalAmount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Payment Status:</span>
+                <span className="text-zinc-400">Payment Status:</span>
                 <span className="font-bold text-emerald-400 uppercase">{confirmedBooking.paymentStatus}</span>
               </div>
             </div>
@@ -769,12 +790,12 @@ END:VCALENDAR`;
                 onClick={handleDownloadCalendar}
                 className="btn-liquid-secondary !text-xs !py-2.5 flex items-center justify-center gap-2"
               >
-                <Download className="w-3.5 h-3.5 text-purple-400" />
+                <Download className="w-3.5 h-3.5 text-zinc-400" />
                 <span>Add to Calendar (.ics)</span>
               </button>
 
               <a
-                href={`https://wa.me/919820012345?text=Hi%20Cosmos%20Gaming%2C%20my%20booking%20reference%20is%20${confirmedBooking.bookingRef}`}
+                href={`https://wa.me/919769464603?text=Hi%20Cosmos%20Gaming%2C%20my%20booking%20reference%20is%20${confirmedBooking.bookingRef}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-liquid-secondary !text-xs !py-2.5 flex items-center justify-center gap-2"
@@ -784,12 +805,12 @@ END:VCALENDAR`;
               </a>
 
               <a
-                href="https://maps.google.com/?q=Bandra+East+Mumbai"
+                href="https://maps.google.com/?q=Office+No+23+New+Shopping+Centre+Government+Colony+Bandra+East+Mumbai+400051"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-liquid-secondary !text-xs !py-2.5 flex items-center justify-center gap-2"
               >
-                <Navigation className="w-3.5 h-3.5 text-sky-400" />
+                <Navigation className="w-3.5 h-3.5 text-zinc-400" />
                 <span>Get Directions</span>
               </a>
 
@@ -797,7 +818,6 @@ END:VCALENDAR`;
                 onClick={() => router.push("/dashboard")}
                 className="btn-liquid-primary !text-xs !py-2.5 flex items-center justify-center gap-2"
               >
-                <Sparkles className="w-3.5 h-3.5" />
                 <span>View in Dashboard</span>
               </button>
             </div>

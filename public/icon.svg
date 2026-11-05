@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#09090b" stroke="#27272a" stroke-width="1.5" />
+  <!-- Minimalist Gamepad / Crosshair Emblem -->
+  <path d="M9 13a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4v-6z" fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" />
+  <!-- D-Pad Left -->
+  <path d="M12 14v4M10 16h4" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+  <!-- Action Buttons Right -->
+  <circle cx="19.5" cy="14.5" r="1" fill="#ffffff" />
+  <circle cx="21.5" cy="16.5" r="1" fill="#ffffff" />
+</svg>
+

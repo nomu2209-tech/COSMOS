@@ -1,1 +1,35 @@
-node_modules
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js build artifacts
+/.next/
+/out/
+build/
+dist/
+
+# typescript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
+Thumbs.db
+*.pem
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# local env files (do NOT commit secrets to GitHub)
+.env*.local
+
+# vercel
+.vercel

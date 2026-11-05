@@ -4,12 +4,21 @@
 
 @layer base {
   :root {
-    --background: 7 7 11;
-    --foreground: 248 250 252;
-    --cosmos-primary: 139 92 246;
-    --cosmos-secondary: 124 58 237;
-    --cyber-blue: 56 189 248;
-    --cyber-pink: 236 72 153;
+    --background: 18 18 18;
+    --foreground: 244 244 245;
+    --card-bg: #18181b;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --input-bg: #1e1e24;
+    --accent: #ea580c;
+  }
+
+  html.light {
+    --background: 250 250 250;
+    --foreground: 9 9 11;
+    --card-bg: #ffffff;
+    --card-border: #e4e4e7;
+    --input-bg: #ffffff;
+    --accent: #ea580c;
   }
 
   * {
@@ -18,36 +27,107 @@
   }
 
   body {
-    background-color: #07070b;
-    color: #f8fafc;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    background-color: #121212;
+    color: #f4f4f5;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  /* Custom Glowing Scrollbar */
+  html.light body {
+    background-color: #fafafa !important;
+    color: #09090b !important;
+  }
+
+  /* Clean Native Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #07070b;
+    background: #09090b;
+  }
+
+  html.light ::-webkit-scrollbar-track {
+    background: #f4f4f5;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.35);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #27272a;
+    border-radius: 3px;
+  }
+
+  html.light ::-webkit-scrollbar-thumb {
+    background: #d4d4d8;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.6);
+    background: #3f3f46;
   }
 }
 
 @layer components {
-  /* LIQUID GLASS BUTTONS - CORE REQUIREMENT */
+  /* EXCLUSIVE SOPHISTICATED ACCENT BUTTON (BURNT ORANGE) */
+  .btn-accent-booking {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    color: #ffffff;
+    background-color: #ea580c;
+    border: 1px solid #ea580c;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+  }
+
+  .btn-accent-booking:hover {
+    background-color: #c2410c;
+    border-color: #c2410c;
+    box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .btn-accent-booking:active {
+    transform: scale(0.98);
+  }
+
+  /* INFINITE AUTO-SCROLLING MARQUEE */
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 35s linear infinite;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* SCROLL REVEAL HELPER */
+  .reveal-init {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-active {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* CLEAN RECTANGULAR BUTTONS */
   .btn-liquid-primary {
     position: relative;
     display: inline-flex;
@@ -55,58 +135,28 @@
     justify-content: center;
     gap: 0.5rem;
     font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.025em;
-    padding: 0.75rem 1.75rem;
-    border-radius: 9999px;
-    color: #ffffff;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.45) 0%, rgba(124, 58, 237, 0.25) 100%);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    color: #09090b;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease;
     cursor: pointer;
-    overflow: hidden;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  /* Liquid Glass Light Refraction Shimmer */
-  .btn-liquid-primary::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -60%;
-    width: 40%;
-    height: 200%;
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.25) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(30deg);
-    transition: all 0.75s ease;
-    pointer-events: none;
   }
 
   .btn-liquid-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.6) 0%, rgba(124, 58, 237, 0.35) 100%);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.6);
-  }
-
-  .btn-liquid-primary:hover::before {
-    left: 140%;
+    background-color: #f4f4f5;
+    border-color: #f4f4f5;
   }
 
   .btn-liquid-primary:active {
-    transform: translateY(0px) scale(0.98);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    transform: scale(0.98);
   }
 
-  /* SECONDARY LIQUID GLASS */
+  /* SECONDARY BUTTON */
   .btn-liquid-secondary {
     position: relative;
     display: inline-flex;
@@ -114,119 +164,471 @@
     justify-content: center;
     gap: 0.5rem;
     font-weight: 500;
-    font-size: 0.95rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    color: #e2e8f0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    color: #f4f4f5;
+    background-color: #18181b;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease;
     cursor: pointer;
-    overflow: hidden;
   }
 
   .btn-liquid-secondary:hover {
-    transform: translateY(-2px);
-    color: #ffffff;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), 0 4px 20px rgba(0, 0, 0, 0.3);
+    background-color: #27272a;
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  /* TERTIARY GHOST GLASS */
+  /* GHOST BUTTON */
   .btn-liquid-ghost {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     font-weight: 500;
-    font-size: 0.9rem;
-    padding: 0.6rem 1.25rem;
-    border-radius: 9999px;
-    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: #a1a1aa;
     background: transparent;
     border: 1px solid transparent;
-    transition: all 0.25s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
   }
 
   .btn-liquid-ghost:hover {
-    color: #f8fafc;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    background-color: #18181b;
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
-  /* GLASS CARDS */
+  /* CLEAN SOLID CARDS */
   .glass-card {
-    background: rgba(14, 14, 24, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1.25rem;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.15s ease;
   }
 
   .glass-card-hover:hover {
-    transform: translateY(-4px);
-    border-color: rgba(139, 92, 246, 0.35);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  /* GLASS PANEL (for Modals and Dashboards) */
+  /* PANELS */
   .glass-panel {
-    background: rgba(12, 12, 20, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background-color: #111116;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   }
 
-  /* FORM INPUTS IN GLASS STYLE */
+  /* FORM INPUTS */
   .glass-input {
     width: 100%;
-    background: rgba(8, 8, 14, 0.6);
-    backdrop-filter: blur(10px);
+    background-color: var(--input-bg);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: #f8fafc;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    color: inherit;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease;
     outline: none;
   }
 
   .glass-input:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    background: rgba(12, 12, 22, 0.8);
+    border-color: #52525b;
+    background-color: #18181b;
   }
 
   .glass-input::placeholder {
-    color: #64748b;
+    color: #71717a;
   }
 
-  /* AMBIENT GLOW EFFECTS */
+  /* REMOVED: .cosmos-glow-orb is completely hidden */
   .cosmos-glow-orb {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(90px);
-    opacity: 0.45;
-    pointer-events: none;
+    display: none !important;
   }
 }
 
-/* ACCESSIBILITY: REDUCED MOTION */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* ==========================================================================
+   EXPLICIT LIGHT MODE RULES
+   Every text that is written in white becomes Black in light mode.
+   Surfaces and borders adapt cleanly to high-contrast neutral light styling.
+   ========================================================================== */
+
+/* 1. All white and near-white text turns into crisp Black */
+html.light .text-white,
+html.light .text-zinc-100,
+html.light .text-zinc-200,
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #09090b !important;
+}
+
+html.light .text-zinc-300,
+html.light .text-slate-300 {
+  color: #27272a !important;
+}
+
+html.light .text-zinc-400,
+html.light .text-slate-400 {
+  color: #52525b !important;
+}
+
+html.light .text-zinc-500,
+html.light .text-slate-500 {
+  color: #71717a !important;
+}
+
+/* 2. Headings default to black */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #09090b !important;
+}
+
+/* 3. Cards and Panels in Light Mode */
+html.light .glass-card {
+  background-color: #ffffff !important;
+  border-color: #e4e4e7 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .glass-card-hover:hover {
+  border-color: #d4d4d8 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .glass-panel {
+  background-color: #ffffff !important;
+  border-color: #e4e4e7 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 4. Form inputs in Light Mode */
+html.light .glass-input {
+  background-color: #ffffff !important;
+  border-color: #d4d4d8 !important;
+  color: #09090b !important;
+}
+
+html.light .glass-input:focus {
+  background-color: #ffffff !important;
+  border-color: #09090b !important;
+}
+
+html.light .glass-input::placeholder {
+  color: #a1a1aa !important;
+}
+
+/* 5. Invert dark container backgrounds to light */
+html.light .bg-zinc-900,
+html.light .bg-zinc-950,
+html.light .bg-zinc-850 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-zinc-800 {
+  background-color: #f4f4f5 !important;
+}
+
+html.light .bg-black,
+html.light .bg-black\/40,
+html.light .bg-black\/50,
+html.light .bg-black\/60,
+html.light .bg-black\/80 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-white\/5,
+html.light .bg-white\/10,
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/\[0\.03\],
+html.light .bg-white\/\[0\.05\],
+html.light .bg-white\/\[0\.06\] {
+  background-color: #f4f4f5 !important;
+}
+
+/* 6. Invert dark borders to light gray borders */
+html.light .border-zinc-800,
+html.light .border-zinc-750,
+html.light .border-zinc-700,
+html.light .border-zinc-700\/60,
+html.light .border-zinc-850,
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20 {
+  border-color: #e4e4e7 !important;
+}
+
+/* 7. Sticky Header and Footer in Light Mode */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: #e4e4e7 !important;
+}
+
+html.light footer {
+  background-color: #f4f4f5 !important;
+  border-top-color: #e4e4e7 !important;
+}
+
+/* 8. Image Bottom Overlays: fade to white so black text on top is 100% visible */
+html.light .from-\[\#09090b\] {
+  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #ffffff var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.light .from-\[\#07070b\] {
+  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #ffffff var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.light .from-black\/80 {
+  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(255, 255, 255, 0.8) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+/* 9. Buttons in Light Mode:
+   - Primary button is solid black with WHITE text
+   - Secondary button is white with dark border and BLACK text
+*/
+html.light .btn-liquid-primary {
+  color: #ffffff !important;
+  background-color: #09090b !important;
+  border-color: #09090b !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light .btn-liquid-primary * {
+  color: #ffffff !important;
+}
+
+html.light .btn-liquid-primary:hover {
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+}
+
+html.light .btn-liquid-secondary {
+  color: #09090b !important;
+  background-color: #ffffff !important;
+  border-color: #d4d4d8 !important;
+}
+
+html.light .btn-liquid-secondary * {
+  color: #09090b !important;
+}
+
+html.light .btn-liquid-secondary:hover {
+  background-color: #f4f4f5 !important;
+  border-color: #a1a1aa !important;
+}
+
+html.light .btn-liquid-ghost {
+  color: #52525b !important;
+}
+
+html.light .btn-liquid-ghost:hover {
+  color: #09090b !important;
+  background-color: #f4f4f5 !important;
+}
+
+/* 10. Selected items and high-contrast badges */
+html.light .border-white {
+  border-color: #09090b !important;
+}
+
+html.light .bg-white {
+  background-color: #09090b !important;
+  color: #ffffff !important;
+}
+
+html.light .bg-white * {
+  color: #ffffff !important;
+}
+
+/* Ensure colored badges remain legible */
+html.light .bg-emerald-950\/40 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #047857 !important;
+}
+
+html.light .bg-rose-950\/40 {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}
+
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #be123c !important;
+}
+
+html.light .bg-amber-950\/40,
+html.light .bg-amber-950\/60 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #b45309 !important;
+}
+
+html.light .bg-sky-950\/40 {
+  background-color: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+
+html.light .text-sky-300,
+html.light .text-sky-400 {
+  color: #0369a1 !important;
+}
+
+/* SKIP TO CONTENT ACCESSIBILITY LINK */
+.skip-to-content {
+  position: absolute;
+  top: -9999px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+}
+
+/* PRINT STYLESHEET */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  nav,
+  footer,
+  .skip-to-content,
+  #cookie-banner,
+  #back-to-top,
+  #floating-contact,
+  #scroll-progress,
+  button,
+  .btn-liquid-primary,
+  .btn-liquid-secondary,
+  .btn-liquid-ghost {
+    display: none !important;
+  }
+
+  .glass-card,
+  .glass-panel {
+    background: transparent !important;
+    border: 1px solid #e4e4e7 !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3, h4, p, span, li {
+    color: #000000 !important;
+  }
+
+  a {
+    color: #000000 !important;
+    text-decoration: underline;
   }
 }
+
+/* ==========================================================================
+   COSMOS ESPORTS & CAFE TACTICAL RADAR ANIMATIONS
+   Native GPU-accelerated keyframes for the interactive auth station hub
+   ========================================================================== */
+
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-cw {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-ccw {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes radar-pulse {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.35;
+  }
+}
+
+@keyframes signal-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 9s linear infinite;
+  transform-origin: center center;
+}
+
+.animate-orbit-cw {
+  animation: orbit-cw 36s linear infinite;
+  transform-origin: center center;
+}
+
+.animate-orbit-ccw {
+  animation: orbit-ccw 36s linear infinite;
+  transform-origin: center center;
+}
+
+.animate-radar-pulse {
+  animation: radar-pulse 3.5s ease-in-out infinite;
+}
+
+.animate-signal-ping {
+  animation: signal-ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+

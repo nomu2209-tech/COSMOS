@@ -1,7 +1,7 @@
 import React from "react";
 
 interface LiquidGlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "accent";
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
   icon?: React.ReactNode;
@@ -19,7 +19,9 @@ export const LiquidGlassButton: React.FC<LiquidGlassButtonProps> = ({
   ...props
 }) => {
   const variantClass =
-    variant === "primary"
+    variant === "accent"
+      ? "btn-accent-booking"
+      : variant === "primary"
       ? "btn-liquid-primary"
       : variant === "secondary"
       ? "btn-liquid-secondary"

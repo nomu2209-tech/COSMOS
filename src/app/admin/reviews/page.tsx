@@ -115,7 +115,7 @@ export default function AdminReviewsPage() {
           <GlassCard key={r.id} className="border-white/10 p-4 flex flex-col justify-between space-y-3">
             <div className="space-y-2">
               <h3 className="text-lg font-bold text-white font-['Rajdhani',sans-serif]">{r.authorName}</h3>
-              <p className="text-xs text-slate-300">Rating: {"★".repeat(r.rating)} ({r.rating}/5)</p>
+              <p className="text-xs text-slate-300">Rating: {r.rating}/5 Stars</p>
               <p className="text-sm text-slate-200 mt-1 line-clamp-3">{r.comment}</p>
               {r.gamePlayed && <p className="text-xs text-purple-300">Game: {r.gamePlayed}</p>}
             </div>

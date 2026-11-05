@@ -48,7 +48,7 @@ export default function ReviewsSection() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div className="space-y-3 max-w-2xl">
-          <Badge variant="purple" size="md">
+          <Badge variant="neutral" size="md">
             AUTHENTIC COMMUNITY FEEDBACK
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white font-['Rajdhani',sans-serif]">
@@ -66,7 +66,7 @@ export default function ReviewsSection() {
             setIsModalOpen(true);
             setSubmitted(false);
           }}
-          icon={<Plus className="w-4 h-4 text-purple-400" />}
+          icon={<Plus className="w-4 h-4 text-zinc-400" />}
         >
           Leave a Review
         </LiquidGlassButton>
@@ -106,12 +106,12 @@ export default function ReviewsSection() {
                 <div>
                   <p className="font-bold text-white">{rev.authorName}</p>
                   {rev.gamePlayed && (
-                    <p className="text-[11px] text-purple-400 font-medium">
+                    <p className="text-[11px] text-zinc-400 font-medium">
                       Played {rev.gamePlayed}
                     </p>
                   )}
                 </div>
-                <Badge variant="purple" size="sm">
+                <Badge variant="neutral" size="sm">
                   Verified Gamer
                 </Badge>
               </div>
@@ -132,7 +132,7 @@ export default function ReviewsSection() {
             </button>
 
             <div>
-              <Badge variant="purple" size="sm">
+              <Badge variant="neutral" size="sm">
                 SHARE YOUR EXPERIENCE
               </Badge>
               <h3 className="text-2xl font-black uppercase text-white font-['Rajdhani',sans-serif] mt-1">

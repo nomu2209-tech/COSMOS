@@ -230,7 +230,7 @@ export default function AdminBookingsPage() {
                     </td>
                     <td className="p-3.5">
                       <p className="text-white">{b.bookingDate}</p>
-                      <p className="text-[11px] text-purple-400">{b.startTime} – {b.endTime}</p>
+                      <p className="text-[11px] text-zinc-400">{b.startTime} - {b.endTime}</p>
                     </td>
                     <td className="p-3.5 font-bold text-white font-['Rajdhani',sans-serif]">
                       ₹{b.totalAmount}

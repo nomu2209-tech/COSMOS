@@ -22,7 +22,7 @@ export default function AdminEventsPage() {
     eventDate: new Date().toISOString().split("T")[0],
     startTime: "13:30",
     entryFee: 299,
-    prizePool: "🏆 Winner: ₹10,000 Scholarship | 🥈 Runner-Up: ₹5,000 Scholarship",
+    prizePool: "Winner: ₹10,000 | Runner-Up: ₹5,000",
     maxParticipants: 32,
     format: "PS5 | 1v1 | Single Elimination",
     rules: "Default competitive squads. 5 min halves. Tactical defending.",

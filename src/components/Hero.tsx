@@ -2,16 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LiquidGlassButton } from "./ui/LiquidGlassButton";
 import { Badge } from "./ui/Badge";
 import { useData } from "@/context/DataContext";
 import {
   Calendar,
-  Gamepad2,
-  Trophy,
-  Sparkles,
-  ChevronDown,
   Monitor,
+  Gamepad2,
+  Headphones,
+  Coffee,
+  MapPin,
+  Clock,
+  ArrowDownRight,
   Flame,
 } from "lucide-react";
 
@@ -23,143 +26,168 @@ export default function Hero() {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const businessName = settings?.businessName || "COSMOS GAMING";
-  const tagline = settings?.tagline || "Play • Compete • Win • Repeat";
+  const businessName = settings?.businessName || "COSMOS GAMING & LOUNGE";
+  const address = settings?.address || "Office No. 23, New Shopping Centre, Government Colony, Bandra East, Mumbai - 400051";
+
+  // Parallax translation: slower movement than foreground text
+  const parallaxOffset = scrollY * 0.32;
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-12 pb-24 px-4 sm:px-6 lg:px-8">
-      {/* Dynamic Parallax Background Atmosphere */}
+    <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden border-b border-zinc-800 bg-[#121212] pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      {/* Parallax Background Lounge Photo */}
       <div
-        className="absolute inset-0 pointer-events-none transition-transform duration-100 ease-out"
+        className="absolute inset-0 pointer-events-none will-change-transform z-0"
         style={{
-          transform: `translateY(${scrollY * 0.25}px)`,
+          transform: `translate3d(0, ${parallaxOffset}px, 0)`,
         }}
       >
-        {/* Deep Dark Gaming Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0e0c1a]/80 via-[#07070b]/90 to-[#07070b]" />
-
-        {/* Ambient Glow Orbs */}
-        <div className="cosmos-glow-orb w-[650px] h-[650px] bg-purple-600/20 -top-32 left-1/2 -translate-x-1/2 animate-pulse-slow" />
-        <div className="cosmos-glow-orb w-[450px] h-[450px] bg-sky-500/15 top-1/3 -left-32 animate-float" />
-        <div className="cosmos-glow-orb w-[400px] h-[400px] bg-pink-500/15 bottom-10 -right-20 animate-float" />
-
-        {/* Subtle Cyber Matrix Grid Background */}
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px)`,
-            backgroundSize: "36px 36px",
-          }}
+        <Image
+          src="/images/hero-lounge.jpg"
+          alt="Cosmos Gaming physical esports lounge with ergonomic seating and ambient lighting"
+          fill
+          priority
+          className="object-cover object-center brightness-[0.38] contrast-[1.08] scale-105"
         />
+        {/* Cinematic Charcoal Gradient Masks */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/80 to-[#121212]/35" />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#121212]/40 to-[#121212]/90" />
       </div>
 
-      {/* Main Hero Container */}
-      <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-        {/* Verified Location & Tagline Badge */}
-        <div className="inline-flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-500">
-          <Badge variant="purple" size="md" className="py-1 px-4 text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 border-purple-500/40">
-            <Flame className="w-3.5 h-3.5 text-purple-400 fill-purple-400" />
-            <span>Bandra East, Mumbai • Official Gaming Lounge</span>
+      {/* Foreground Content */}
+      <div className="relative z-10 max-w-7xl mx-auto w-full space-y-10">
+        {/* Top Meta Tags */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Badge variant="accent" size="sm" className="font-['Space_Grotesk',sans-serif] font-bold tracking-wider uppercase">
+            <Flame className="w-3.5 h-3.5 mr-1" />
+            Bandra East • BKC Corridor
+          </Badge>
+
+          <Badge variant="neutral" size="sm" className="flex items-center gap-1.5 font-medium">
+            <Clock className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Open Daily: 11:00 AM – 11:00 PM</span>
+          </Badge>
+
+          <Badge variant="neutral" size="sm" className="hidden sm:inline-flex items-center gap-1.5 font-medium">
+            <MapPin className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Government Colony, Mumbai</span>
           </Badge>
         </div>
 
-        {/* Hero Main Headline */}
-        <div className="space-y-4">
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-white font-['Rajdhani',sans-serif]">
-            <span className="block text-slate-100">{businessName}</span>
-            <span className="block bg-gradient-to-r from-purple-400 via-indigo-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.4)]">
-              {tagline}
-            </span>
+        {/* 100 Thieves Style Massive Typography */}
+        <div className="space-y-6 max-w-4xl">
+          <h1 className="font-['Space_Grotesk',sans-serif] text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-white leading-[1.03]">
+            COSMOS GAMING CAFE <br />
+            <span className="text-zinc-400">&amp; ESPORTS LOUNGE</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-            Experience next-level gaming at Mumbai&apos;s premier gaming center in Bandra East.
-            Equipped with 240Hz PC esports setups, PlayStation 5 stations, 360° VR Gun pods, and
-            force-feedback racing rigs.
+          <p className="max-w-2xl text-base sm:text-xl text-zinc-300 font-normal leading-relaxed">
+            Mumbai&apos;s premier social gaming sanctuary in Bandra East. Purpose-built tournament 240Hz PC battle stations,
+            4K PlayStation 5 arena pods, 360° tactical VR gun zones, and an artisan coffee bar with fresh kitchen bites.
           </p>
+
+          <div className="flex items-center gap-4 text-xs font-medium text-zinc-400">
+            <span className="text-white font-semibold">Hourly sessions from ₹120/hr</span>
+            <span className="text-zinc-700">|</span>
+            <span>Zero latency gigabit LAN</span>
+            <span className="text-zinc-700">|</span>
+            <span>Espresso bar on-site</span>
+          </div>
         </div>
 
-        {/* Primary Liquid Glass Call to Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        {/* Action Row - Burnt Orange Accent Button & Neutral Companion */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
           <Link href="/book" className="w-full sm:w-auto">
             <LiquidGlassButton
-              variant="primary"
+              variant="accent"
               size="lg"
               fullWidth
-              icon={<Calendar className="w-5 h-5 text-white" />}
+              icon={<Calendar className="w-4 h-4" />}
             >
-              BOOK YOUR SLOT
+              Book Station Slot
             </LiquidGlassButton>
           </Link>
 
-          <Link href="/#zones" className="w-full sm:w-auto">
+          <Link href="/#cafe" className="w-full sm:w-auto">
             <LiquidGlassButton
               variant="secondary"
               size="lg"
               fullWidth
-              icon={<Gamepad2 className="w-5 h-5 text-purple-400" />}
+              icon={<Coffee className="w-4 h-4 text-orange-400" />}
             >
-              EXPLORE GAMING ZONES
+              Explore Cafe &amp; Food Menu
+            </LiquidGlassButton>
+          </Link>
+
+          <Link href="/#specs" className="w-full sm:w-auto">
+            <LiquidGlassButton
+              variant="secondary"
+              size="lg"
+              fullWidth
+              icon={<ArrowDownRight className="w-4 h-4" />}
+            >
+              Hardware Specs
             </LiquidGlassButton>
           </Link>
         </div>
 
-        {/* Live Features Bar */}
-        <div className="pt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
-          <div className="glass-card !p-4 flex items-center gap-3 border-white/5 bg-white/[0.02]">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center shrink-0">
-              <Gamepad2 className="w-5 h-5 text-purple-400" />
+        {/* Architectural 4-Pillar Grid (OS NYC & 100 Thieves Hybrid) */}
+        <div className="pt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 border-t border-zinc-800/80">
+          {/* PC Battle Station */}
+          <div className="bg-[#18181b]/90 border border-zinc-800 p-4 rounded-lg space-y-1.5 transition-all hover:border-[#ea580c]/50">
+            <div className="flex items-center justify-between text-zinc-200">
+              <span className="font-['Space_Grotesk',sans-serif] text-xs font-bold uppercase tracking-wider text-white">
+                PC Esports Rig
+              </span>
+              <Monitor className="w-4 h-4 text-zinc-400" />
             </div>
-            <div>
-              <p className="text-xs font-bold text-white">PlayStation 5</p>
-              <p className="text-[11px] text-slate-400">4K HDR 120Hz Displays</p>
-            </div>
+            <p className="text-xs text-zinc-400 leading-snug">
+              240Hz Fast-IPS panels, mechanical RGB decks, low-ping gigabit fiber LAN.
+            </p>
           </div>
 
-          <div className="glass-card !p-4 flex items-center gap-3 border-white/5 bg-white/[0.02]">
-            <div className="w-10 h-10 rounded-xl bg-sky-600/20 border border-sky-500/30 flex items-center justify-center shrink-0">
-              <Monitor className="w-5 h-5 text-sky-400" />
+          {/* PS5 Lounge */}
+          <div className="bg-[#18181b]/90 border border-zinc-800 p-4 rounded-lg space-y-1.5 transition-all hover:border-[#ea580c]/50">
+            <div className="flex items-center justify-between text-zinc-200">
+              <span className="font-['Space_Grotesk',sans-serif] text-xs font-bold uppercase tracking-wider text-white">
+                PlayStation 5 Pods
+              </span>
+              <Gamepad2 className="w-4 h-4 text-zinc-400" />
             </div>
-            <div>
-              <p className="text-xs font-bold text-white">PC Esports Rigs</p>
-              <p className="text-[11px] text-slate-400">240Hz High FPS Gaming</p>
-            </div>
+            <p className="text-xs text-zinc-400 leading-snug">
+              Sony PS5 on 4K 120Hz displays with DualSense haptic multiplayer co-op.
+            </p>
           </div>
 
-          <div className="glass-card !p-4 flex items-center gap-3 border-white/5 bg-white/[0.02]">
-            <div className="w-10 h-10 rounded-xl bg-pink-600/20 border border-pink-500/30 flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-pink-400" />
+          {/* 360 VR Tactical */}
+          <div className="bg-[#18181b]/90 border border-zinc-800 p-4 rounded-lg space-y-1.5 transition-all hover:border-[#ea580c]/50">
+            <div className="flex items-center justify-between text-zinc-200">
+              <span className="font-['Space_Grotesk',sans-serif] text-xs font-bold uppercase tracking-wider text-white">
+                360° VR Tactical
+              </span>
+              <Headphones className="w-4 h-4 text-zinc-400" />
             </div>
-            <div>
-              <p className="text-xs font-bold text-white">VR Gun Setup</p>
-              <p className="text-[11px] text-slate-400">360° Room Immersion</p>
-            </div>
+            <p className="text-xs text-zinc-400 leading-snug">
+              Room-scale sensors with haptic recoil VR rifle peripherals and zombie missions.
+            </p>
           </div>
 
-          <div className="glass-card !p-4 flex items-center gap-3 border-white/5 bg-white/[0.02]">
-            <div className="w-10 h-10 rounded-xl bg-amber-600/20 border border-amber-500/30 flex items-center justify-center shrink-0">
-              <Trophy className="w-5 h-5 text-amber-400" />
+          {/* Artisan Cafe & Kitchen */}
+          <div className="bg-[#18181b]/90 border border-zinc-800 p-4 rounded-lg space-y-1.5 transition-all hover:border-[#ea580c]/50">
+            <div className="flex items-center justify-between text-zinc-200">
+              <span className="font-['Space_Grotesk',sans-serif] text-xs font-bold uppercase tracking-wider text-orange-400">
+                Cafe &amp; Kitchen
+              </span>
+              <Coffee className="w-4 h-4 text-orange-400" />
             </div>
-            <div>
-              <p className="text-xs font-bold text-white">Tournaments</p>
-              <p className="text-[11px] text-slate-400">Cash & Scholarships</p>
-            </div>
+            <p className="text-xs text-zinc-400 leading-snug">
+              Artisan espresso, vanilla cold brew, smashed brioche burgers, truffle fries.
+            </p>
           </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="pt-8">
-          <a
-            href="#zones"
-            className="inline-flex flex-col items-center text-xs text-slate-400 hover:text-white transition-colors"
-          >
-            <span>Scroll to explore</span>
-            <ChevronDown className="w-4 h-4 text-purple-400 animate-bounce mt-1" />
-          </a>
         </div>
       </div>
     </section>

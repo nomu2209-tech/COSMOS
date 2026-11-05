@@ -108,26 +108,26 @@ export default function AdminCustomersPage() {
                     </td>
                     <td className="p-3.5">
                       {c.phone ? (
-                        <span className="flex items-center gap-1.5 font-mono text-purple-300">
-                          <Phone className="w-3 h-3 text-purple-400" />
+                        <span className="flex items-center gap-1.5 font-mono text-zinc-300">
+                          <Phone className="w-3 h-3 text-zinc-400" />
                           <span>{c.phone}</span>
                         </span>
                       ) : (
-                        <span className="text-slate-600">—</span>
+                        <span className="text-zinc-600">-</span>
                       )}
                     </td>
                     <td className="p-3.5">
                       {c.email ? (
-                        <span className="flex items-center gap-1.5 text-slate-300">
-                          <Mail className="w-3 h-3 text-sky-400" />
+                        <span className="flex items-center gap-1.5 text-zinc-300">
+                          <Mail className="w-3 h-3 text-zinc-400" />
                           <span>{c.email}</span>
                         </span>
                       ) : (
-                        <span className="text-slate-600">—</span>
+                        <span className="text-zinc-600">-</span>
                       )}
                     </td>
                     <td className="p-3.5">
-                      <Badge variant="purple" size="sm">
+                      <Badge variant="neutral" size="sm">
                         {c.totalBookings} Session(s)
                       </Badge>
                     </td>

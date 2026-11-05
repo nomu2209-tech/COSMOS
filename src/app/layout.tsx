@@ -4,11 +4,16 @@ import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CookieBanner from "@/components/CookieBanner";
+import BackToTop from "@/components/BackToTop";
+import FloatingContactButton from "@/components/FloatingContactButton";
+import UtmTracker from "@/components/UtmTracker";
 
 export const metadata: Metadata = {
-  title: "Cosmos Gaming Mumbai | High-End PS5, PC, VR & Simulators | Bandra East",
+  title: "Cosmos Gaming Centre Mumbai | High-End PS5, PC Esports, VR & Simulators | Bandra East",
   description:
-    "Official website and slot booking for Cosmos Gaming Mumbai in Bandra East. Play on high-end 240Hz PCs, PlayStation 5, VR Gun Setup, and Racing Simulators. Book your slot online.",
+    "Official website and slot booking for Cosmos Gaming Centre in Bandra East, Mumbai. Play on high-end 240Hz PCs, PlayStation 5, VR Gun Setup, and Racing Simulators. Book your slot online.",
   keywords: [
     "Cosmos Gaming Mumbai",
     "Gaming Cafe Bandra East",
@@ -19,13 +24,17 @@ export const metadata: Metadata = {
     "Cosmos Gaming Centre",
   ],
   openGraph: {
-    title: "Cosmos Gaming Mumbai | Premium Gaming Lounge & Esports Centre",
+    title: "Cosmos Gaming Centre Mumbai | Premium Gaming Lounge & Esports Centre",
     description:
       "Book high-end PC, PS5, VR, and Racing Simulator slots online at Cosmos Gaming Centre, Bandra East, Mumbai.",
     url: "https://cosmosgamingmumbai.com",
-    siteName: "Cosmos Gaming Mumbai",
+    siteName: "Cosmos Gaming Centre Mumbai",
     locale: "en_IN",
     type: "website",
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
   },
 };
 
@@ -34,16 +43,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // LocalBusiness structured data for SEO with verified details
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EntertainmentBusiness",
-    name: "Cosmos Gaming Mumbai",
-    alternateName: "Cosmos Gaming Centre",
-    description: "Premium gaming cafe and esports centre in Bandra East, Mumbai featuring PS5, High-End PC, VR Gun Setup, and Racing Simulators.",
+    name: "Cosmos Gaming Centre",
+    alternateName: "Cosmos Gaming Mumbai",
+    description: "Premium gaming lounge and esports centre in Bandra East, Mumbai featuring 360° VR Tactical Gun Pods, PS5, High-End PC, and Racing Simulators.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Cosmos Gaming Centre, Bandra East",
+      streetAddress: "Office No. 23, New Shopping Centre, Government Colony, Bandra East",
       addressLocality: "Mumbai",
       addressRegion: "Maharashtra",
       postalCode: "400051",
@@ -55,7 +63,7 @@ export default function RootLayout({
       longitude: 72.8465,
     },
     url: "https://cosmosgamingmumbai.com",
-    telephone: "+919820012345",
+    telephone: "+919769464603",
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -82,7 +90,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
         <script
@@ -90,12 +98,30 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-[#07070b] text-[#f8fafc] antialiased selection:bg-purple-600/30 selection:text-purple-200 min-h-screen flex flex-col font-['Outfit',sans-serif]">
+      <body className="bg-[#121212] text-[#f4f4f5] antialiased selection:bg-[#ea580c] selection:text-white min-h-screen flex flex-col font-['Inter',sans-serif]">
+        {/* Accessibility Skip to Content Link */}
+        <a href="#main-content" className="skip-to-content">
+          Skip to main content
+        </a>
+
+        {/* Global Scroll Progress Bar */}
+        <ScrollProgressBar />
+
+        {/* UTM Parameter Capture */}
+        <UtmTracker />
+
         <AuthProvider>
           <DataProvider>
             <Navbar />
-            <main className="flex-1 relative z-10">{children}</main>
+            <main id="main-content" tabIndex={-1} className="flex-1 relative z-10 focus:outline-none">
+              {children}
+            </main>
             <Footer />
+
+            {/* Global Interactive Widgets */}
+            <CookieBanner />
+            <BackToTop />
+            <FloatingContactButton />
           </DataProvider>
         </AuthProvider>
       </body>
