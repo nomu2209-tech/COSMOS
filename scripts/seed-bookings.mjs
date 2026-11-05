@@ -1,0 +1,473 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { createClient } from "@supabase/supabase-js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "..");
+
+// Load environment variables from .env.local if present
+const envLocalPath = path.join(rootDir, ".env.local");
+if (fs.existsSync(envLocalPath)) {
+  const envContent = fs.readFileSync(envLocalPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith("#") && trimmed.includes("=")) {
+      const [key, ...vals] = trimmed.split("=");
+      const val = vals.join("=").trim().replace(/^["']|["']$/g, "");
+      if (!process.env[key.trim()]) {
+        process.env[key.trim()] = val;
+      }
+    }
+  }
+}
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://smasvdcvqhvjgfgjlvwy.supabase.co";
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function seed() {
+  console.log("Seeding realistic sample bookings for Cosmos Gaming Dashboard...");
+
+  // Create 4 more customer users so we have a realistic customer directory
+  const customerUsers = [
+    {
+      id: "a1111111-1111-4111-8111-111111111111",
+      name: "Rohan Patel",
+      phone: "+91 98199 44332",
+      email: "rohan.p@yahoo.com",
+      role: "CUSTOMER",
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      cosmosXp: 480,
+      createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "b2222222-2222-4222-8222-222222222222",
+      name: "Kavya Deshmukh",
+      phone: "+91 97690 88776",
+      email: "kavya.fps@outlook.com",
+      role: "CUSTOMER",
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      cosmosXp: 620,
+      createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "c3333333-3333-4333-8333-333333333333",
+      name: "Siddharth Mehta",
+      phone: "+91 98332 55441",
+      email: "sid.racing@gmail.com",
+      role: "CUSTOMER",
+      isEmailVerified: false,
+      isPhoneVerified: true,
+      cosmosXp: 350,
+      createdAt: new Date(Date.now() - 20 * 86400000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "d4444444-4444-4444-8444-444444444444",
+      name: "Devansh Nair",
+      phone: "+91 99200 77112",
+      email: "devansh.nair@gmail.com",
+      role: "CUSTOMER",
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      cosmosXp: 290,
+      createdAt: new Date(Date.now() - 15 * 86400000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+  ];
+
+  for (const u of customerUsers) {
+    await supabase.from("users").upsert(u, { onConflict: "id" });
+  }
+
+  const defaultCustId = "33e9b119-913a-4467-b50a-f10d29f046fa";
+  const rohanId = "a1111111-1111-4111-8111-111111111111";
+  const kavyaId = "b2222222-2222-4222-8222-222222222222";
+  const sidId = "c3333333-3333-4333-8333-333333333333";
+  const devId = "d4444444-4444-4444-8444-444444444444";
+
+  const today = new Date();
+  const format = (d) => d.toISOString().split("T")[0];
+
+  const dMinus25 = format(new Date(Date.now() - 25 * 86400000));
+  const dMinus18 = format(new Date(Date.now() - 18 * 86400000));
+  const dMinus12 = format(new Date(Date.now() - 12 * 86400000));
+  const dMinus7 = format(new Date(Date.now() - 7 * 86400000));
+  const dMinus5 = format(new Date(Date.now() - 5 * 86400000));
+  const dMinus3 = format(new Date(Date.now() - 3 * 86400000));
+  const dMinus1 = format(new Date(Date.now() - 1 * 86400000));
+  const dToday = format(today);
+  const dPlus1 = format(new Date(Date.now() + 1 * 86400000));
+  const dPlus2 = format(new Date(Date.now() + 2 * 86400000));
+
+  const sampleBookings = [
+    {
+      id: "book-sample-1",
+      bookingRef: "CGM-2026-9101",
+      userId: defaultCustId,
+      customerName: "Aryan Sharma",
+      customerPhone: "+91 98201 11223",
+      customerEmail: "aryan.sharma@gmail.com",
+      zoneId: "zone-vr",
+      zoneName: "VR Immersive Arena & Gun Setup",
+      stationId: "station-vr-1",
+      stationNumber: 1,
+      bookingDate: dToday,
+      startTime: "14:00",
+      endTime: "16:00",
+      durationHours: 2,
+      playersCount: 2,
+      subtotal: 700,
+      discountAmount: 100,
+      totalAmount: 600,
+      appliedOfferCode: "COSMOSBOGO",
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "IN_PROGRESS",
+      specialRequests: "Zombie Outbreak VR haptic rifles setup",
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "book-sample-2",
+      bookingRef: "CGM-2026-9102",
+      userId: rohanId,
+      customerName: "Rohan Patel",
+      customerPhone: "+91 98199 44332",
+      customerEmail: "rohan.p@yahoo.com",
+      zoneId: "zone-ps5",
+      zoneName: "PlayStation 5 (PS5) 4K Arena",
+      stationId: "station-ps5-1",
+      stationNumber: 1,
+      bookingDate: dToday,
+      startTime: "16:00",
+      endTime: "19:00",
+      durationHours: 3,
+      playersCount: 2,
+      subtotal: 450,
+      discountAmount: 51,
+      totalAmount: 399,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "CONFIRMED",
+      specialRequests: "Tekken 8 & EA Sports FC 25 tournament warmup",
+      createdAt: new Date(Date.now() - 7200000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "book-sample-3",
+      bookingRef: "CGM-2026-9103",
+      userId: kavyaId,
+      customerName: "Kavya Deshmukh",
+      customerPhone: "+91 97690 88776",
+      customerEmail: "kavya.fps@outlook.com",
+      zoneId: "zone-pc",
+      zoneName: "High-End PC Esports Battleground",
+      stationId: "station-pc-3",
+      stationNumber: 3,
+      bookingDate: dToday,
+      startTime: "18:00",
+      endTime: "21:00",
+      durationHours: 3,
+      playersCount: 1,
+      subtotal: 360,
+      discountAmount: 61,
+      totalAmount: 299,
+      appliedOfferCode: null,
+      paymentMethod: "CARD",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "CONFIRMED",
+      specialRequests: "240Hz monitor profile for Valorant Ranked",
+      createdAt: new Date(Date.now() - 14400000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "book-sample-4",
+      bookingRef: "CGM-2026-9104",
+      userId: sidId,
+      customerName: "Siddharth Mehta",
+      customerPhone: "+91 98332 55441",
+      customerEmail: "sid.racing@gmail.com",
+      zoneId: "zone-racing",
+      zoneName: "Steering Wheel Racing Simulator",
+      stationId: "station-sim-1",
+      stationNumber: 1,
+      bookingDate: dToday,
+      startTime: "20:00",
+      endTime: "22:00",
+      durationHours: 2,
+      playersCount: 1,
+      subtotal: 360,
+      discountAmount: 0,
+      totalAmount: 360,
+      appliedOfferCode: null,
+      paymentMethod: "PAY_AT_VENUE",
+      paymentStatus: "PENDING",
+      bookingStatus: "CONFIRMED",
+      specialRequests: "F1 24 Monaco Grand Prix time trial setup",
+      createdAt: new Date(Date.now() - 18000000).toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "book-sample-5",
+      bookingRef: "CGM-2026-8980",
+      userId: defaultCustId,
+      customerName: "Aryan Sharma",
+      customerPhone: "+91 98201 11223",
+      customerEmail: "aryan.sharma@gmail.com",
+      zoneId: "zone-pc",
+      zoneName: "High-End PC Esports Battleground",
+      stationId: "station-pc-1",
+      stationNumber: 1,
+      bookingDate: dMinus1,
+      startTime: "15:00",
+      endTime: "18:00",
+      durationHours: 3,
+      playersCount: 1,
+      subtotal: 360,
+      discountAmount: 61,
+      totalAmount: 299,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: null,
+      createdAt: new Date(Date.now() - 100000000).toISOString(),
+      updatedAt: new Date(Date.now() - 90000000).toISOString(),
+    },
+    {
+      id: "book-sample-6",
+      bookingRef: "CGM-2026-8955",
+      userId: devId,
+      customerName: "Devansh Nair",
+      customerPhone: "+91 99200 77112",
+      customerEmail: "devansh.nair@gmail.com",
+      zoneId: "zone-ps5",
+      zoneName: "PlayStation 5 (PS5) 4K Arena",
+      stationId: "station-ps5-4",
+      stationNumber: 4,
+      bookingDate: dMinus3,
+      startTime: "17:00",
+      endTime: "20:00",
+      durationHours: 3,
+      playersCount: 4,
+      subtotal: 450,
+      discountAmount: 51,
+      totalAmount: 399,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "4 Controllers for WWE 2K24 rumble",
+      createdAt: new Date(Date.now() - 260000000).toISOString(),
+      updatedAt: new Date(Date.now() - 250000000).toISOString(),
+    },
+    {
+      id: "book-sample-7",
+      bookingRef: "CGM-2026-8920",
+      userId: rohanId,
+      customerName: "Rohan Patel",
+      customerPhone: "+91 98199 44332",
+      customerEmail: "rohan.p@yahoo.com",
+      zoneId: "zone-vr",
+      zoneName: "VR Immersive Arena & Gun Setup",
+      stationId: "station-vr-2",
+      stationNumber: 2,
+      bookingDate: dMinus5,
+      startTime: "16:00",
+      endTime: "18:00",
+      durationHours: 2,
+      playersCount: 2,
+      subtotal: 700,
+      discountAmount: 105,
+      totalAmount: 595,
+      appliedOfferCode: "STUDENT15",
+      paymentMethod: "CARD",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "Student ID verified at front desk",
+      createdAt: new Date(Date.now() - 430000000).toISOString(),
+      updatedAt: new Date(Date.now() - 420000000).toISOString(),
+    },
+    {
+      id: "book-sample-8",
+      bookingRef: "CGM-2026-8871",
+      userId: kavyaId,
+      customerName: "Kavya Deshmukh",
+      customerPhone: "+91 97690 88776",
+      customerEmail: "kavya.fps@outlook.com",
+      zoneId: "zone-pc",
+      zoneName: "High-End PC Esports Battleground",
+      stationId: "station-pc-5",
+      stationNumber: 5,
+      bookingDate: dMinus7,
+      startTime: "13:00",
+      endTime: "17:00",
+      durationHours: 4,
+      playersCount: 1,
+      subtotal: 480,
+      discountAmount: 80,
+      totalAmount: 400,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "CS2 Competitive duo session",
+      createdAt: new Date(Date.now() - 600000000).toISOString(),
+      updatedAt: new Date(Date.now() - 59000000).toISOString(),
+    },
+    {
+      id: "book-sample-9",
+      bookingRef: "CGM-2026-8812",
+      userId: sidId,
+      customerName: "Siddharth Mehta",
+      customerPhone: "+91 98332 55441",
+      customerEmail: "sid.racing@gmail.com",
+      zoneId: "zone-racing",
+      zoneName: "Steering Wheel Racing Simulator",
+      stationId: "station-sim-2",
+      stationNumber: 2,
+      bookingDate: dMinus12,
+      startTime: "18:00",
+      endTime: "20:00",
+      durationHours: 2,
+      playersCount: 1,
+      subtotal: 360,
+      discountAmount: 54,
+      totalAmount: 306,
+      appliedOfferCode: "STUDENT15",
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "Forza Horizon 5 rally cockpit",
+      createdAt: new Date(Date.now() - 1050000000).toISOString(),
+      updatedAt: new Date(Date.now() - 1040000000).toISOString(),
+    },
+    {
+      id: "book-sample-10",
+      bookingRef: "CGM-2026-8740",
+      userId: devId,
+      customerName: "Devansh Nair",
+      customerPhone: "+91 99200 77112",
+      customerEmail: "devansh.nair@gmail.com",
+      zoneId: "zone-ps5",
+      zoneName: "PlayStation 5 (PS5) 4K Arena",
+      stationId: "station-ps5-2",
+      stationNumber: 2,
+      bookingDate: dMinus18,
+      startTime: "19:00",
+      endTime: "22:00",
+      durationHours: 3,
+      playersCount: 2,
+      subtotal: 450,
+      discountAmount: 51,
+      totalAmount: 399,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "EA Sports FC 25 Champions weekend",
+      createdAt: new Date(Date.now() - 1560000000).toISOString(),
+      updatedAt: new Date(Date.now() - 1550000000).toISOString(),
+    },
+    {
+      id: "book-sample-11",
+      bookingRef: "CGM-2026-8692",
+      userId: defaultCustId,
+      customerName: "Aryan Sharma",
+      customerPhone: "+91 98201 11223",
+      customerEmail: "aryan.sharma@gmail.com",
+      zoneId: "zone-vr",
+      zoneName: "VR Immersive Arena & Gun Setup",
+      stationId: "station-vr-1",
+      stationNumber: 1,
+      bookingDate: dMinus25,
+      startTime: "15:00",
+      endTime: "17:00",
+      durationHours: 2,
+      playersCount: 2,
+      subtotal: 700,
+      discountAmount: 100,
+      totalAmount: 600,
+      appliedOfferCode: "COSMOSBOGO",
+      paymentMethod: "CARD",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "COMPLETED",
+      specialRequests: "Superhot VR & Tactical rifles",
+      createdAt: new Date(Date.now() - 2160000000).toISOString(),
+      updatedAt: new Date(Date.now() - 2150000000).toISOString(),
+    },
+    {
+      id: "book-sample-12",
+      bookingRef: "CGM-2026-9201",
+      userId: rohanId,
+      customerName: "Rohan Patel",
+      customerPhone: "+91 98199 44332",
+      customerEmail: "rohan.p@yahoo.com",
+      zoneId: "zone-pc",
+      zoneName: "High-End PC Esports Battleground",
+      stationId: "station-pc-2",
+      stationNumber: 2,
+      bookingDate: dPlus1,
+      startTime: "16:00",
+      endTime: "19:00",
+      durationHours: 3,
+      playersCount: 1,
+      subtotal: 360,
+      discountAmount: 61,
+      totalAmount: 299,
+      appliedOfferCode: null,
+      paymentMethod: "UPI",
+      paymentStatus: "COMPLETED",
+      bookingStatus: "CONFIRMED",
+      specialRequests: "Valorant Premier Tournament match",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "book-sample-13",
+      bookingRef: "CGM-2026-9202",
+      userId: kavyaId,
+      customerName: "Kavya Deshmukh",
+      customerPhone: "+91 97690 88776",
+      customerEmail: "kavya.fps@outlook.com",
+      zoneId: "zone-ps5",
+      zoneName: "PlayStation 5 (PS5) 4K Arena",
+      stationId: "station-ps5-5",
+      stationNumber: 5,
+      bookingDate: dPlus2,
+      startTime: "17:00",
+      endTime: "20:00",
+      durationHours: 3,
+      playersCount: 2,
+      subtotal: 450,
+      discountAmount: 51,
+      totalAmount: 399,
+      appliedOfferCode: null,
+      paymentMethod: "PAY_AT_VENUE",
+      paymentStatus: "PENDING",
+      bookingStatus: "CONFIRMED",
+      specialRequests: "Mortal Kombat 1 co-op match",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+  ];
+
+  for (const b of sampleBookings) {
+    const { error } = await supabase.from("bookings").upsert(b, { onConflict: "id" });
+    if (error) console.error("Error inserting booking:", b.id, error.message);
+    else console.log("✓ Seeded booking:", b.bookingRef, b.customerName);
+  }
+
+  console.log("Seeding complete!");
+}
+
+seed();
