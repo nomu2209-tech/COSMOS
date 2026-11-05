@@ -2,6 +2,7 @@
   "name": "cosmos-gaming-mumbai",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://cosmos-gaming.embarko.app",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
