@@ -29,3 +29,4 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured
   : null;
 
 export default supabase;
+
