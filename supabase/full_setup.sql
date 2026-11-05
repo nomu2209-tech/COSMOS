@@ -246,3 +246,42 @@ VALUES
 ('offer-squad', 'Squad LAN Pass: Flat 20% Off', 'SQUAD20', 'Book 3 or more stations simultaneously with your squad for 2+ hours and get a flat 20% discount on total booking value.', 'PERCENTAGE', 20, null, 2, '2026-01-01', '2027-12-31', 'Minimum 3 players / stations required. Applicable on PC and PS5 zones.', 'PUBLISHED', 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=800&q=80'),
 ('offer-student', 'Student Gaming Pass: 15% Off', 'STUDENT15', 'Show your valid college or school student ID card at the front desk and enjoy 15% off all weekday gaming sessions.', 'PERCENTAGE', 15, null, 1, '2026-01-01', '2027-12-31', 'Valid Student ID card required at check-in. Valid Monday through Friday.', 'PUBLISHED', 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=800&q=80')
 ON CONFLICT (id) DO NOTHING;
+
+
+-- ============================================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES - RECOMMENDED BEST PRACTICE
+-- ============================================================================
+
+-- Enable RLS across all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE verification_otps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gaming_zones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE games ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pricing_tiers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE event_registrations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gallery_images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE business_settings ENABLE ROW LEVEL SECURITY;
+
+-- 1. Public Read Access for Lounge Info
+CREATE POLICY "Public Read Gaming Zones" ON gaming_zones FOR SELECT USING (true);
+CREATE POLICY "Public Read Stations" ON stations FOR SELECT USING (true);
+CREATE POLICY "Public Read Games" ON games FOR SELECT USING (true);
+CREATE POLICY "Public Read Pricing" ON pricing_tiers FOR SELECT USING (true);
+CREATE POLICY "Public Read Offers" ON offers FOR SELECT USING (true);
+CREATE POLICY "Public Read Events" ON events FOR SELECT USING (true);
+CREATE POLICY "Public Read Gallery" ON gallery_images FOR SELECT USING (true);
+CREATE POLICY "Public Read Settings" ON business_settings FOR SELECT USING (true);
+CREATE POLICY "Public Read Approved Reviews" ON reviews FOR SELECT USING (status = 'APPROVED');
+
+-- 2. Allow Customers to Submit Reviews & Bookings
+CREATE POLICY "Public Insert Reviews" ON reviews FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public Insert Bookings" ON bookings FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public Insert Registrations" ON event_registrations FOR INSERT WITH CHECK (true);
+
+-- (Note: Your Next.js backend uses SUPABASE_SERVICE_ROLE_KEY which automatically
+-- has full bypass access to read/write all tables safely on the server.)
